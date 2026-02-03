@@ -1,0 +1,64 @@
+# Dependencies
+node_modules
+npm-debug.log
+
+# Environment files
+.env
+.env.example
+.env.test
+
+# Coverage and logs
+coverage
+logs
+*.log
+
+# Development files
+.git
+.gitignore
+README.md
+IMPROVEMENTS.md
+*.md
+
+# Development Docker files
+Dockerfile.dev
+docker-compose.yml
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS generated files
+Thumbs.db
+.DS_Store
+
+# Temporary files
+tmp
+temp
+
+# SQL files (if not needed in container)
+*.sql
+
+# Debug files
+debug-*.js
+
+# Test files and directories
+tests
+*.test.js
+jest.config.js
+eslint.config.js
+
+# Scripts directory (if not needed in production)
+scripts
+
+# Documentation
+docs
+
+# Local Files
+.DS_Store
+**/.DS_Store
+
+# Package lock files (npm ci uses package-lock.json but we copy it explicitly)
+# Uncomment if you want to exclude it from context but keep it available for COPY
+# package-lock.json
