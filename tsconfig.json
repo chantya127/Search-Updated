@@ -1,0 +1,52 @@
+{
+    "compilerOptions": {
+        /* ── What JS version to output ── */
+        // "target" = what version of JavaScript the compiler should produce.
+        // ES2022 is perfect because Node 20 (our Docker image) supports it natively.
+        // If we used ES5, the compiler would add polyfills and bloat the output.
+        "target": "ES2022",
+        /* ── Module System ── */
+        // "module" = what import/export style to use.
+        // "NodeNext" aligns with Node.js's native ESM support (we already use "type": "module" in package.json).
+        // This ensures our compiled JS uses `import`/`export` — not old `require()`.
+        "module": "NodeNext",
+        // "moduleResolution" = how TypeScript finds imported files.
+        // "NodeNext" follows Node.js's own resolution algorithm (including .js extensions in imports).
+        "moduleResolution": "NodeNext",
+        /* ── Output ── */
+        // "outDir" = where compiled .js files go. We keep source (.ts) in src/ and output in dist/.
+        // This way, Node.js runs dist/server.js in production — never the .ts files directly.
+        "outDir": "./dist",
+        // "rootDir" = tells the compiler where source files live, so the dist/ folder mirrors src/ structure.
+        "rootDir": "./src",
+        /* ── Strictness ── */
+        // "strict" = enables ALL strict type-checking flags at once. This is the #1 reason to use TypeScript.
+        // Without this, TypeScript is just JavaScript with extra syntax — you lose most of the safety benefits.
+        "strict": true,
+        /* ── Interop ── */
+        // "esModuleInterop" = allows `import x from 'module'` to work with CommonJS packages (like dotenv).
+        // Without it, you'd need `import * as dotenv from 'dotenv'` — ugly and error-prone.
+        "esModuleInterop": true,
+        // "forceConsistentCasingInImports" = prevents bugs on case-insensitive filesystems (macOS).
+        // Mac treats "Config.js" and "config.js" as the same file. Linux (production Docker) does NOT.
+        // This flag catches that mismatch BEFORE it breaks in production.
+        "forceConsistentCasingInFileNames": true,
+        /* ── Source Maps ── */
+        // "sourceMap" = generates .js.map files so error stack traces point to your .ts files, not compiled .js.
+        // Critical for debugging production errors — you see "server.ts:17" instead of "server.js:12".
+        "sourceMap": true,
+        /* ── Other ── */
+        // "skipLibCheck" = skip type-checking node_modules .d.ts files.
+        // These are third-party — we trust them. Checking them slows compilation significantly.
+        "skipLibCheck": true,
+    },
+    // Which files to include in compilation
+    "include": [
+        "src/**/*.ts"
+    ],
+    // Which files to exclude
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

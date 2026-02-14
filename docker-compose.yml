@@ -1,11 +1,9 @@
-version: "3.9"
-
 services:
   api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: updated-search-api  
+    container_name: tss-pre-order-api
     ports:
       - "3000:3000"
     env_file:
