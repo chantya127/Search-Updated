@@ -17,12 +17,8 @@ const UNBXD_SEARCH_FIELD_MAP: Partial<Record<keyof UnbxdProduct, keyof Transform
     images: 'images',
     gender: 'gender_type',
     brand: 'artist',
-<<<<<<< HEAD
     inventory: 'stock',
     discountedPrice: 'spl_price'
-=======
-    inventory: 'stock'
->>>>>>> cc3f5bb (changed middleware logic for search, to handle all in backend and added autosuggest endpoint integration)
 };
 
 const UNBXD_AUTOSUGGEST_FIELD_MAP: Partial<Record<keyof UnbxdAutoSuggestProduct, keyof TransformedAutoSuggestProductModel>> = {
