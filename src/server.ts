@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import cors from "@fastify/cors";
 import {
     serializerCompiler,
     validatorCompiler
@@ -13,17 +14,25 @@ const fastify = Fastify({
     connectionTimeout: 10000,  // kill idle connections after 10s
 });
 
-
-fastify.setValidatorCompiler(validatorCompiler);
-fastify.setSerializerCompiler(serializerCompiler);
-
-fastify.register(routes, { prefix: '/api/v1' });
-fastify.get('/health', async () => ({ status: 'ok', timestamp: Date.now() }));
-
 const PORT: number = config.PORT;
 
 const start = async (): Promise<void> => {
     try {
+        // Register CORS first — must be awaited before routes
+        await fastify.register(cors, {
+            origin: true,
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+            credentials: true,
+            preflight: true,
+            strictPreflight: false,
+        });
+
+        fastify.setValidatorCompiler(validatorCompiler);
+        fastify.setSerializerCompiler(serializerCompiler);
+
+        fastify.register(routes, { prefix: '/api/v1' });
+        fastify.get('/health', async () => ({ status: 'ok', timestamp: Date.now() }));
+
         await fastify.listen({ port: PORT, host: '0.0.0.0' });
         fastify.log.info(`Started listening on port: ${PORT}`);
     }
