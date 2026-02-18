@@ -1,9 +1,13 @@
 import config from "../config.js";
 import { request } from "undici";
 
-import { UNBXD_EMPTY_RESULTS_TEXT, UNBXD_FIELDS_TO_FETCH, UNBXD_ALLOWED_FILTER_KEYS } from "../constant.js";
-import { transformedProducts } from "../transformers/unbxdTransformer.js";
-import type { SearchRequestBody, SearchResponse, UnbxdApiResponse } from "../schema/search.js";
+import { UNBXD_EMPTY_RESULTS_TEXT, UNBXD_SEARCH_FIELDS_TO_FETCH, UNBXD_ALLOWED_FILTER_KEYS } from "../constant.js";
+import { transformSearchProducts, transformAutoSuggestProducts, transformSearchFiltersList } from "../transformers/unbxdTransformer.js";
+import type {
+    SearchRequest, SearchResponse, UnbxdApiResponse, AutoSuggestRequest, AutoSuggestResponse,
+    UnbxdAutoSuggestApiResponse
+} from "../schema/search.js";
+import { ur } from "zod/locales";
 
 
 class UnbxdService {
@@ -35,7 +39,7 @@ class UnbxdService {
         return body.json() as Promise<T>;
     }
 
-    private buildFilters(filters: SearchRequestBody['filters']): string[] {
+    private buildFilters(filters: SearchRequest['filters']): string[] {
         const filterList: string[] = [];
         if (!filters) return filterList;
 
@@ -58,7 +62,7 @@ class UnbxdService {
     }
 
 
-    async search(payload: SearchRequestBody): Promise<SearchResponse> {
+    async search(payload: SearchRequest): Promise<SearchResponse> {
         const url = new URL(`${this.baseUrl}/search`);
 
         if (payload.keyword) {
@@ -67,7 +71,7 @@ class UnbxdService {
         url.searchParams.append('page', String(payload.page));
         url.searchParams.append('rows', String(payload.offset));
         url.searchParams.append('facet.multiselect', 'true');
-        url.searchParams.append('fields', UNBXD_FIELDS_TO_FETCH);
+        url.searchParams.append('fields', UNBXD_SEARCH_FIELDS_TO_FETCH);
 
         if (payload.sort) url.searchParams.append('sort', payload.sort);
 
@@ -78,13 +82,33 @@ class UnbxdService {
         const response = data?.response ?? { products: [], numberOfProducts: 0 };
 
         return {
-            products: transformedProducts(response.products),
-            filters: data?.facets ?? {},
+            products: transformSearchProducts(response.products),
+            filters: transformSearchFiltersList(data.facets),
             numberOfProducts: response.numberOfProducts ?? 0,
             didYouMean: data?.didYouMean?.[0]?.suggestion ?? "",
             searchTerm: payload.keyword,
             empty_result_text: UNBXD_EMPTY_RESULTS_TEXT
         };
+    }
+
+    async autoSuggest(payload: AutoSuggestRequest): Promise<AutoSuggestResponse> {
+
+        const url = new URL(`${this.baseUrl}/autosuggest`);
+
+        if (payload.keyword) {
+            url.searchParams.append('q', payload.keyword);
+        }
+        url.searchParams.append('inFields.count', '4');
+        url.searchParams.append('popularProducts.count', '4');
+        url.searchParams.append('keywordSuggestions.count', '4');
+        url.searchParams.append('topQueries.count', '4');
+        url.searchParams.append('promotedSuggestion.count', '4');
+        url.searchParams.append('popularProducts.fields', 'urlKey, autosuggest, doctype, title, imageUrl');
+
+        const data = await this.makeRequest<UnbxdAutoSuggestApiResponse>(url);
+        return {
+            products: transformAutoSuggestProducts(data.response.products)
+        }
     }
 }
 
