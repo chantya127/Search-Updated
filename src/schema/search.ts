@@ -31,8 +31,12 @@ export const UnbxdProductSchema = z.object({
     imageGallery: z.array(z.string()),
     gender: z.string(),
     brand: z.array(z.string()),
+<<<<<<< HEAD
     inventory: z.number(),
     discountedPrice: z.number(),
+=======
+    inventory: z.number()
+>>>>>>> cc3f5bb (changed middleware logic for search, to handle all in backend and added autosuggest endpoint integration)
 });
 
 export type UnbxdProduct = z.infer<typeof UnbxdProductSchema>;
