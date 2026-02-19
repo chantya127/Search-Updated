@@ -1,6 +1,7 @@
 
 export const UNBXD_EMPTY_RESULTS_TEXT = 'The product you are searching for cannot be found' as const;
 export const UNBXD_SEARCH_FIELDS_TO_FETCH = 'x,title,sellingPrice,imageUrl,availability,category,badges_unx,variantId,urlKey,exclusivePrice,images,imageGallery,gender,brand,inventory,discountedPrice' as const;
+export const UNBXD_AUTOSUGGEST_FIELDS_TO_FETCH = 'urlKey, autosuggest, doctype, title, imageUrl' as const;
 
 export const UNBXD_ALLOWED_FILTER_KEYS: Set<string> = new Set([
     'price',
@@ -10,3 +11,5 @@ export const UNBXD_ALLOWED_FILTER_KEYS: Set<string> = new Set([
     'brand_uFilter',
     'availability_uFilter'
 ]);
+
+export const UNBXD_AUTOSUGGEST_RESULTS_COUNT = '4';

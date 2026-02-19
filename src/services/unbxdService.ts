@@ -1,7 +1,7 @@
 import config from "../config.js";
 import { request } from "undici";
 
-import { UNBXD_EMPTY_RESULTS_TEXT, UNBXD_SEARCH_FIELDS_TO_FETCH, UNBXD_ALLOWED_FILTER_KEYS } from "../constant.js";
+import { UNBXD_EMPTY_RESULTS_TEXT, UNBXD_SEARCH_FIELDS_TO_FETCH, UNBXD_ALLOWED_FILTER_KEYS, UNBXD_AUTOSUGGEST_FIELDS_TO_FETCH, UNBXD_AUTOSUGGEST_RESULTS_COUNT } from "../constant.js";
 import { transformSearchProducts, transformAutoSuggestProducts, transformSearchFiltersList } from "../transformers/unbxdTransformer.js";
 import type {
     SearchRequest, SearchResponse, UnbxdApiResponse, AutoSuggestRequest, AutoSuggestResponse,
@@ -98,12 +98,12 @@ class UnbxdService {
         if (payload.keyword) {
             url.searchParams.append('q', payload.keyword);
         }
-        url.searchParams.append('inFields.count', '4');
-        url.searchParams.append('popularProducts.count', '4');
-        url.searchParams.append('keywordSuggestions.count', '4');
-        url.searchParams.append('topQueries.count', '4');
-        url.searchParams.append('promotedSuggestion.count', '4');
-        url.searchParams.append('popularProducts.fields', 'urlKey, autosuggest, doctype, title, imageUrl');
+        url.searchParams.append('inFields.count', UNBXD_AUTOSUGGEST_RESULTS_COUNT);
+        url.searchParams.append('popularProducts.count', UNBXD_AUTOSUGGEST_RESULTS_COUNT);
+        url.searchParams.append('keywordSuggestions.count', UNBXD_AUTOSUGGEST_RESULTS_COUNT);
+        url.searchParams.append('topQueries.count', UNBXD_AUTOSUGGEST_RESULTS_COUNT);
+        url.searchParams.append('promotedSuggestion.count', UNBXD_AUTOSUGGEST_RESULTS_COUNT);
+        url.searchParams.append('popularProducts.fields', UNBXD_AUTOSUGGEST_FIELDS_TO_FETCH);
 
         const data = await this.makeRequest<UnbxdAutoSuggestApiResponse>(url);
         return {

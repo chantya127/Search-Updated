@@ -160,7 +160,11 @@ export function transformAutoSuggestProduct(product: UnbxdAutoSuggestProduct): P
     for (const [unbxdKey, ourKey] of Object.entries(UNBXD_AUTOSUGGEST_FIELD_MAP)) {
         const key = unbxdKey as keyof UnbxdAutoSuggestProduct;
         if (key in product) {
-            (transformedProduct as Record<string, unknown>)[ourKey] = product[key];
+            let value = product[key];
+            if (key === 'imageUrl') {
+                value = product.imageUrl?.map((imgUrl: string) => reformatImageUrlToFileName(imgUrl));
+            }
+            (transformedProduct as Record<string, unknown>)[ourKey] = value;
         }
     }
 
